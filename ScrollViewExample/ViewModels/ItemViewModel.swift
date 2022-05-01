@@ -5,33 +5,32 @@ class ItemViewModel {
     var items: [Item] = []
     
     private let pageSize: Int
-    private var pageNum = 0
+    var loading = false
     
     init(_ pageSize: Int = 15) {
         self.pageSize = pageSize
-        
-        loadNextPage()
     }
-    
-    @discardableResult
-    func loadNextPage() -> Int {
-        if items.count >= 100 {
-            return 0
-        }
+
+    func loadNextPage(completion: @escaping () -> Void) {
+        loading = true
         
-        var num = 0
-        
-        for i in 1...pageSize {
-            items.append(Item(id: pageNum * pageSize + i))
-            num += 1
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            var index = self.items.map {
+                $0.id
+            }.max() ?? 0
             
-            if items.count >= 100 {
-                break
+            for _ in 1...self.pageSize {
+                index += 1
+                self.items.append(Item(id: index))
+
+                if self.items.count >= 100 {
+                    break
+                }
             }
-        }
-        
-        pageNum += 1
-        return num
+            
+            self.loading = false
+            completion()
+        })
     }
     
     func addRow() {

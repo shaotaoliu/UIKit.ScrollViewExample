@@ -17,7 +17,15 @@ class ScrollToViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.dataSource = self
         tableView.delegate = self
         
-        vm.loadNextPage()
+        loadData()
+    }
+    
+    private func loadData() {
+        vm.loadNextPage {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     // to make it work, use a non-system bar button item

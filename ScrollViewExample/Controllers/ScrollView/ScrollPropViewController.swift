@@ -16,7 +16,15 @@ class ScrollPropViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-        vm.loadNextPage()
+        loadData()
+    }
+    
+    private func loadData() {
+        vm.loadNextPage {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

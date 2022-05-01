@@ -8,28 +8,54 @@ class ScrollUpViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.refreshControl = refreshControl
+        
+        refreshControl.beginRefreshing()
+        loadData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        let bottomRow = IndexPath(row: vm.items.count - 1, section: 0)
-        tableView.scrollToRow(at: bottomRow, at: .none, animated: false)
+    @objc func refresh() {
+        if vm.loading || vm.items.count >= 100 {
+            tableView.refreshControl?.endRefreshing()
+            return
+        }
+        
+        loadData()
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < -10 {
-            let count = vm.loadNextPage()
-            if count > 0 {
-                tableView.reloadData()
-                
-                let indexPath = IndexPath(row: count - 1, section: 0)
-                tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+    private func loadData() {
+        vm.loadNextPage {
+            DispatchQueue.main.async {
+                self.tableView.refreshControl?.endRefreshing()
+                self.tableView.reloadData()
             }
         }
     }
+    
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//
+//        let bottomRow = IndexPath(row: vm.items.count - 1, section: 0)
+//        tableView.scrollToRow(at: bottomRow, at: .none, animated: false)
+//    }
+//
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if scrollView.contentOffset.y < -10 {
+//            vm.loadNextPage() {
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//
+//                    let indexPath = IndexPath(row: self.vm.items.count - 1, section: 0)
+//                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+//                }
+//            }
+//        }
+//    }
 }
 
 extension ScrollUpViewController {
