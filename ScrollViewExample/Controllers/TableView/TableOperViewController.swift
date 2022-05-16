@@ -50,7 +50,6 @@ class TableOperViewController: UITableViewController {
         controller.item = vm.items[indexPath.row]
         navigationController?.pushViewController(controller, animated: true)
     }
-    
 }
 
 extension TableOperViewController {

@@ -10,6 +10,12 @@ class TableSelectViewController: UIViewController, UITableViewDelegate, UITableV
 
         tableView.dataSource = self
         tableView.delegate = self
+        
+        vm.loadNextPage {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     @IBAction func showResults(_ sender: Any) {
