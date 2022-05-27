@@ -41,4 +41,30 @@ class TableSectionViewController: UITableViewController {
         return header
     }
     
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal, title: "Favorite") { action, view, completion in
+            print("Tapped Favorite")
+            completion(true)
+        }
+        
+        action.backgroundColor = .systemBlue
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let archive = UIContextualAction(style: .normal, title: "Archive") { action, view, completion in
+            print("Archive Trash")
+            completion(true)
+        }
+        
+        let trash = UIContextualAction(style: .destructive, title: "Trash") { action, view, completion in
+            print("Tapped Trash")
+            completion(true)
+        }
+        
+        archive.backgroundColor = .systemGreen
+        trash.backgroundColor = .systemRed
+        
+        return UISwipeActionsConfiguration(actions: [archive, trash])
+    }
 }
