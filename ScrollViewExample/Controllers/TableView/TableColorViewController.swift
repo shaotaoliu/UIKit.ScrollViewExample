@@ -49,11 +49,12 @@ class TableColorViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        var content = UIListContentConfiguration.groupedHeader()
-        content.text = "Total: \(vm.movies[section].names.count)"
-        
         let footer = UITableViewHeaderFooterView()
-        footer.contentConfiguration = content
+        
+        var config = footer.defaultContentConfiguration()
+        config.text = "Total: \(vm.movies[section].names.count)"
+        footer.contentConfiguration = config
+        
         return footer
     }
 

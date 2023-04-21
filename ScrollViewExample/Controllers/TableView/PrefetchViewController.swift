@@ -15,7 +15,7 @@ class PrefetchViewController: UITableViewController, UITableViewDataSourcePrefet
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = ""
+        cell.textLabel?.text = "loading..."
         
         vm.fetch(id: indexPath.row + 1) { id in
             cell.textLabel?.text = "Item \(id)"
@@ -28,6 +28,12 @@ class PrefetchViewController: UITableViewController, UITableViewDataSourcePrefet
         indexPaths.forEach { indexPath in
             print("Prefetching \(indexPath.row) ......")
             vm.fetch(id: indexPath.row, completion: nil)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            print("Cancelled \(indexPath.row)")
         }
     }
 }

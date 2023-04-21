@@ -56,13 +56,19 @@ class FruitDataSource: UITableViewDiffableDataSource<Section, Fruit> {
     
     func add(fruit: Fruit) {
         fruits.append(fruit)
-        reload()
+        
+        var snapshot = snapshot()
+        snapshot.appendItems([fruit])
+        apply(snapshot, animatingDifferences: true)
     }
     
     func delete(fruit: Fruit) {
         if let index = fruits.firstIndex(where: { $0.title == fruit.title }) {
             fruits.remove(at: index)
-            reload()
+            
+            var snapshot = snapshot()
+            snapshot.deleteItems([fruit])
+            apply(snapshot, animatingDifferences: true)
         }
     }
     
@@ -75,8 +81,23 @@ class FruitDataSource: UITableViewDiffableDataSource<Section, Fruit> {
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        if sourceIndexPath == destinationIndexPath {
+            return
+        }
+        
         let fruit = fruits[sourceIndexPath.row]
         fruits.remove(at: sourceIndexPath.row)
         fruits.insert(fruit, at: destinationIndexPath.row)
+        
+        var snapshot = snapshot()
+        
+        if destinationIndexPath.row == 0 {
+            snapshot.moveItem(fruit, beforeItem: fruits[1])
+        }
+        else {
+            snapshot.moveItem(fruit, afterItem: fruits[destinationIndexPath.row - 1])
+        }
+        
+        apply(snapshot, animatingDifferences: true)
     }
 }

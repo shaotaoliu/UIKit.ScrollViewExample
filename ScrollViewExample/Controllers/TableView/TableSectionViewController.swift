@@ -48,6 +48,7 @@ class TableSectionViewController: UITableViewController {
         }
         
         action.backgroundColor = .systemBlue
+        action.image = UIImage(systemName: "trash")
         return UISwipeActionsConfiguration(actions: [action])
     }
     
